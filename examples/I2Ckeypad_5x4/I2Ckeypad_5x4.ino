@@ -1,7 +1,7 @@
 //
-//    FILE: I2Ckeypad_5x3.ino
+//    FILE: I2Ckeypad_5x4.ino
 //  AUTHOR: Rob Tillaart
-// PURPOSE: demo 5x3 or smaller keypad
+// PURPOSE: demo 5x4 or smaller keypad
 //     URL: https://github.com/RobTillaart/I2CKeyPad
 //
 //  PCF8574
@@ -12,7 +12,7 @@
 #include "Wire.h"
 #include "I2CKeyPad.h"
 
-const uint8_t KEYPAD_ADDRESS = 0x38;
+const uint8_t KEYPAD_ADDRESS = 0x24;
 
 I2CKeyPad keyPad(KEYPAD_ADDRESS);
 
@@ -33,7 +33,7 @@ void setup()
     while(1);
   }
 
-  keyPad.setKeyPadMode(I2C_KEYPAD_5x3);
+  keyPad.setKeyPadMode(I2C_KEYPAD_5x4);
 }
 
 

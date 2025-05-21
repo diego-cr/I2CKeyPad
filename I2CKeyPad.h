@@ -21,7 +21,7 @@
 
 //  experimental
 #define I2C_KEYPAD_4x4            44
-#define I2C_KEYPAD_5x3            53
+#define I2C_KEYPAD_5x4            54
 #define I2C_KEYPAD_6x2            62
 #define I2C_KEYPAD_8x1            81
 
@@ -60,12 +60,12 @@ protected:
   uint8_t  _address;
   uint8_t  _lastKey;
   uint8_t  _mode;
-  uint8_t  _read(uint8_t mask);
+  uint16_t  _read(uint16_t mask);
   uint16_t _debounceThreshold;
   uint32_t _lastTimeRead;
 
   uint8_t  _getKey4x4();
-  uint8_t  _getKey5x3();
+  uint8_t  _getKey5x4();
   uint8_t  _getKey6x2();
   uint8_t  _getKey8x1();
 

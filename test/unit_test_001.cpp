@@ -46,7 +46,7 @@ unittest(test_constants)
   assertEqual(255, I2C_KEYPAD_THRESHOLD);
 
   assertEqual(44, I2C_KEYPAD_4x4);
-  assertEqual(53, I2C_KEYPAD_5x3);
+  assertEqual(54, I2C_KEYPAD_5x4);
   assertEqual(62, I2C_KEYPAD_6x2);
   assertEqual(81, I2C_KEYPAD_8x1);
 }
@@ -72,8 +72,8 @@ unittest(test_mode)
 
   assertEqual(I2C_KEYPAD_4x4, keyPad.getKeyPadMode());
 
-  keyPad.setKeyPadMode(I2C_KEYPAD_5x3);
-  assertEqual(I2C_KEYPAD_5x3, keyPad.getKeyPadMode());
+  keyPad.setKeyPadMode(I2C_KEYPAD_5x4);
+  assertEqual(I2C_KEYPAD_5x4, keyPad.getKeyPadMode());
 
   keyPad.setKeyPadMode(I2C_KEYPAD_4x4);
   assertEqual(I2C_KEYPAD_4x4, keyPad.getKeyPadMode());

@@ -19,7 +19,7 @@ Arduino library for 4x4 (or smaller) keypad connected to an I2C PCF8574.
 The I2CKeyPad library implements the reading of a 4x4 keypad by means of a PCF8574.
 Smaller keypads, meaning less columns or rows (4x3) can be read with it too.
 
-Since 0.3.2 the library allows a 5x3, 6x2 or 8x1 or smaller keypad to be connected too.
+Since 0.3.2 the library allows a 5x4, 6x2 or 8x1 or smaller keypad to be connected too.
 
 ### Breaking change
 
@@ -130,12 +130,12 @@ Invalid values for mode are mapped to 4x4.
 **Supported modi**
 
 There are 4 modi supported, and every mode will also support smaller keypads.
-E.g. a 4x3 keypad can be read in mode 4x4 or in mode 5x3.
+E.g. a 4x3 keypad can be read in mode 4x4 or in mode 5x4.
 
 |  modi  |  value  |  definition      |  notes    |
 |:------:|:-------:|:-----------------|:----------|
 |  4x4   |    44   |  I2C_KEYPAD_4x4  |  default, also for 4x3 4x2 4x1 3x3 3x2 3x1 etc.
-|  5x3   |    53   |  I2C_KEYPAD_5x3  |  also for 5x2 or 5x1 etc.
+|  5x4   |    54   |  I2C_KEYPAD_5x4  |  also for 5x2 or 5x1 etc.
 |  6x2   |    62   |  I2C_KEYPAD_6x2  |  also for 6x1 etc.
 |  8x1   |    81   |  I2C_KEYPAD_8x1  |  not real matrix, connect pins to switch to GND.
 
@@ -172,7 +172,7 @@ It is even possible to change the mapping runtime after each key.
 Note: a keyMap char array may be longer than 18 characters, but only the first 18 are used.
 The length is **NOT** checked upon loading.
 
-Note: The 5x3, 6x2 and the 8x1 modi also uses a key map of length 18.
+Note: The 5x4, 6x2 and the 8x1 modi also uses a key map of length 18.
 
 
 ### Debouncing threshold

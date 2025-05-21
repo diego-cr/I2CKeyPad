@@ -47,7 +47,7 @@ uint8_t I2CKeyPad::getKey()
   }
 
   uint8_t key = 0;
-  if      (_mode == I2C_KEYPAD_5x3) key = _getKey5x3();
+  if      (_mode == I2C_KEYPAD_5x4) key = _getKey5x4();
   else if (_mode == I2C_KEYPAD_6x2) key = _getKey6x2();
   else if (_mode == I2C_KEYPAD_8x1) key = _getKey8x1();
   else                              key = _getKey4x4();  //  default.
@@ -100,7 +100,7 @@ void I2CKeyPad::loadKeyMap(char * keyMap)
 
 void I2CKeyPad::setKeyPadMode(uint8_t mode)
 {
-  if ((mode == I2C_KEYPAD_5x3) ||
+  if ((mode == I2C_KEYPAD_5x4) ||
       (mode == I2C_KEYPAD_6x2) ||
       (mode == I2C_KEYPAD_8x1))
   {
@@ -139,20 +139,23 @@ uint32_t I2CKeyPad::getLastTimeRead()
 //
 //  PROTECTED
 //
-uint8_t I2CKeyPad::_read(uint8_t mask)
+uint16_t I2CKeyPad::_read(uint16_t mask)
 {
   //  improve the odds that IO will not interrupted.
   yield();
 
   _wire->beginTransmission(_address);
-  _wire->write(mask);
+  _wire->write(mask >> 3);
+  _wire->write(mask & 0xF0);
   if (_wire->endTransmission() != 0)
   {
-    //  set communication error
-    return 0xFF;
+    //  set I2C communication error
+    return 0xFFFF;
   }
-  _wire->requestFrom(_address, (uint8_t)1);
-  return _wire->read();
+  _wire->requestFrom(_address, (uint8_t)2);
+  uint16_t value = _wire->read() << 8;
+  value += _wire->read();
+  return value;
 }
 
 
@@ -162,7 +165,7 @@ uint8_t I2CKeyPad::_getKey4x4()
   uint8_t key = 0;
 
   //  mask = 4 rows as input pull up, 4 columns as output
-  uint8_t rows = _read(0xF0);
+  uint16_t rows = _read(0xF0);
   //  check if single line has gone low.
   if (rows == 0xF0)      return I2C_KEYPAD_NOKEY;
   else if (rows == 0xE0) key = 0;
@@ -186,29 +189,30 @@ uint8_t I2CKeyPad::_getKey4x4()
 
 
 //  not tested
-uint8_t I2CKeyPad::_getKey5x3()
+uint8_t I2CKeyPad::_getKey5x4()
 {
   //  key = row + 5 x column
   uint8_t key = 0;
 
-  //  mask = 5 rows as input pull up, 3 columns as output
-  uint8_t rows = _read(0xF8);
+  //  mask = 5 rows as input pull up, 4 columns as output
+  uint16_t rows = _read(0x00FF);
   //  check if single line has gone low.
-  if (rows == 0xF8)      return I2C_KEYPAD_NOKEY;
-  else if (rows == 0xF0) key = 0;
-  else if (rows == 0xE8) key = 1;
-  else if (rows == 0xD8) key = 2;
-  else if (rows == 0xB8) key = 3;
-  else if (rows == 0x78) key = 4;
+  if (rows == 0x1FF0)      return I2C_KEYPAD_NOKEY;
+  else if (rows == 0x1EF0) key = 0;
+  else if (rows == 0x1DF0) key = 1;
+  else if (rows == 0x1BF0) key = 2;
+  else if (rows == 0x17F0) key = 3;
+  else if (rows == 0x0FF0) key = 4;
   else return I2C_KEYPAD_FAIL;
 
-  // 3 columns as input pull up, 5 rows as output
-  uint8_t cols = _read(0x07);
+  // 4 columns as input pull up, 5 rows as output
+  uint16_t cols = _read(0xFF00);
   // check if single line has gone low.
-  if (cols == 0x07)      return I2C_KEYPAD_NOKEY;
-  else if (cols == 0x06) key += 0;
-  else if (cols == 0x05) key += 5;
-  else if (cols == 0x03) key += 10;
+  if (cols == 0x2ee)      return I2C_KEYPAD_NOKEY;
+  else if (cols == 0xE000) key += 0;
+  else if (cols == 0x6000) key += 8;
+  else if (cols == 0xA000) key += 17;
+  else if (cols == 0xC000) key += 24;
   else return I2C_KEYPAD_FAIL;
 
   return key;   //  0..14
@@ -222,7 +226,7 @@ uint8_t I2CKeyPad::_getKey6x2()
   uint8_t key = 0;
 
   //  mask = 6 rows as input pull up, 2 columns as output
-  uint8_t rows = _read(0xFC);
+  uint16_t rows = _read(0xFC);
   //  check if single line has gone low.
   if (rows == 0xFC)      return I2C_KEYPAD_NOKEY;
   else if (rows == 0xF8) key = 0;
@@ -252,7 +256,7 @@ uint8_t I2CKeyPad::_getKey8x1()
   uint8_t key = 0;
 
   //  mask = 8 rows as input pull up, 0 columns as output
-  uint8_t rows = _read(0xFF);
+  uint16_t rows = _read(0xFF);
   //  check if single line has gone low.
   if (rows == 0xFF)      return I2C_KEYPAD_NOKEY;
   else if (rows == 0xFE) key = 0;

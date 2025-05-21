@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.3.2] - 2022-09-19
 - experimental version
-- add 5x3, 6x2 and 8x1 support
+- add 5x4, 6x2 and 8x1 support
 - moved all code to .cpp file
 
 ## [0.3.1] - 2021-12-19
